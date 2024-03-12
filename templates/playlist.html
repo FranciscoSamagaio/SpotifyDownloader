@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Playlist Information</title>
+</head>
+<body>
+    <h1>Playlist Information</h1>
+    <ul>
+        {% for playlist_name in playlist_names %}
+            <li><a href="{{ url_for('get_playlist_tracks', playlist_id=playlist_name) }}">{{ playlist_name }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

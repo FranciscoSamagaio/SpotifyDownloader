@@ -1,6 +1,7 @@
 import requests
 import urllib.parse
 from config import CLIENT_ID, CLIENT_SECRET
+from flask import render_template
 import json
 
 from flask import Flask, redirect, request, jsonify, session
@@ -72,21 +73,47 @@ def get_playlist():
     }
     response = requests.get(API_BASE_URL + 'me/playlists/', headers=headers)
 
-    print(response.text)
-
     playlist= response.json()
 
-    # Extract JSON content using get_json()
+    # Check if the request was successful
+    if response.status_code != 200:
+        return jsonify({"error": "Unable to fetch playlists"})
+
     data = response.json()
 
-    # Extract IDs and names from each playlist
-    playlist_info = [(playlist['id'], playlist['name']) for playlist in data['items']]
+    # Extract names from each playlist
+    playlist_names = [playlist['name'] for playlist in data['items']]
 
-    # Print or use the extracted information
-    for playlist_id, playlist_name in playlist_info:
-        print(f"Playlist ID: {playlist_id}, Name: {playlist_name}")
+    # Return an HTML page with the playlist names
+    return render_template('playlist.html', playlist_names=playlist_names)
 
-    return jsonify(data)
+
+@app.route('/playlist/<playlist_id>')
+def get_playlist_tracks(playlist_id):
+    if 'access_token' not in session:
+        return redirect('/login')
+
+    if datetime.now().timestamp() > session['expires_at']:
+        return redirect('/refresh-token')
+
+    headers = {
+        'Authorization': f"Bearer {session['access_token']}"
+    }
+    response = requests.get(API_BASE_URL + f'playlists/{playlist_id}/tracks', headers=headers)
+
+    # Check if the request was successful
+    if response.status_code != 200:
+        return jsonify({"error": "Unable to fetch playlist tracks"})
+
+    data = response.json()
+
+    # Extract track names from each item
+    track_names = [track['track']['name'] for track in data['items']]
+
+    # Return an HTML page with the track names
+    return render_template('playlist_tracks.html', playlist_id=playlist_id, track_names=track_names)
+
+
 
 @app.route('/refresh-token')
 def refresh_token():

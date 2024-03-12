@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Playlist Tracks</title>
+</head>
+<body>
+    <h1>Playlist Tracks</h1>
+    <p>Tracks for Playlist ID: {{ playlist_id }}</p>
+    <ul>
+        {% for track_name in track_names %}
+            <li>{{ track_name }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
