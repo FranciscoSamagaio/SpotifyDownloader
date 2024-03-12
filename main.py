@@ -1,5 +1,6 @@
 import requests
 import urllib.parse
+from config import CLIENT_ID, CLIENT_SECRET
 import json
 
 from flask import Flask, redirect, request, jsonify, session
@@ -9,8 +10,6 @@ app = Flask(__name__)
 app.config['SESSION_TYPE'] = 'filesystem'
 app.secret_key = '192b9bdd22ab9ed4d12e236c78afcb9a3'
 
-CLIENT_ID = '8a32e7538e224beab1b1cfa6f38463b3'
-CLIENT_SECRET = 'c496c68c14f14d6096d0d956289f1a95'
 REDIRECT_URI = 'http://localhost:5000/callback'
 
 AUTH_URL = 'https://accounts.spotify.com/authorize'

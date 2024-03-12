@@ -2,17 +2,6 @@ import requests
 import json
 
 class MySong:
-    CLIENT_ID = '8a32e7538e224beab1b1cfa6f38463b3'
-    CLIENT_SECRET = 'c496c68c14f14d6096d0d956289f1a95'
-
-    def __init__(self):
-        self.get_token()
-
-    def get_token(self):
-        response = requests.post(url='https://accounts.spotify.com/api/token',
-                                 data={ 'grant_type': 'client_credentials' },
-                                 auth=(self.CLIENT_ID, self.CLIENT_SECRET))
-        self.spotify_token = response.json()['access_token']
         
     def find_songs(self, playlist_id):
         headers = {
