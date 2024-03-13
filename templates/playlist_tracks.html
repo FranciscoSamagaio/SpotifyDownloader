@@ -7,8 +7,8 @@
     <h1>Playlist Tracks</h1>
     <p>Tracks for Playlist ID: {{ playlist_id }}</p>
     <ul>
-        {% for track_name in track_names %}
-            <li>{{ track_name }}</li>
+        {% for track_name, artist_name in combined_tracks %}
+            <li>{{ track_name }} - {{ artist_name }}</li>
         {% endfor %}
     </ul>
 </body>

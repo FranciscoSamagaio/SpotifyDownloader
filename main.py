@@ -82,20 +82,23 @@ def get_playlist():
     data = response.json()
 
     # Extract names from each playlist
-    playlist_names = [playlist['name'] for playlist in data['items']]
+    playlist_names = [playlist['name'] for playlist in data['items']]   
+    
+    # Extract names from each playlist
+    playlist_ids = [playlist['id'] for playlist in data['items']]
 
     # Return an HTML page with the playlist names
-    return render_template('playlist.html', playlist_names=playlist_names)
+    return render_template('playlist.html', playlist_ids=playlist_ids)
 
 
 @app.route('/playlist/<playlist_id>')
 def get_playlist_tracks(playlist_id):
     if 'access_token' not in session:
         return redirect('/login')
-
+    
     if datetime.now().timestamp() > session['expires_at']:
         return redirect('/refresh-token')
-
+    
     headers = {
         'Authorization': f"Bearer {session['access_token']}"
     }
@@ -106,13 +109,18 @@ def get_playlist_tracks(playlist_id):
         return jsonify({"error": "Unable to fetch playlist tracks"})
 
     data = response.json()
-
-    # Extract track names from each item
+    
+    # Extract track names from each item    
     track_names = [track['track']['name'] for track in data['items']]
+    	
+    # Extract track names from each item
+    artist_names = [artist['name'] for track in data['items'] for artist in track['track']['artists']]
+
+    # Assuming you have track_names and artist_names as lists
+    combined_tracks = [(track_name, artist_name) for track_name, artist_name in zip(track_names, artist_names)]
 
     # Return an HTML page with the track names
-    return render_template('playlist_tracks.html', playlist_id=playlist_id, track_names=track_names)
-
+    return render_template('playlist_tracks.html', playlist_id=playlist_id, combined_tracks=combined_tracks)
 
 
 @app.route('/refresh-token')
