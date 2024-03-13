@@ -6,8 +6,8 @@
 <body>
     <h1>Playlist Information</h1>
     <ul>
-        {% for playlist_id in playlist_ids %}
-            <li><a href="{{ url_for('get_playlist_tracks', playlist_id=playlist_id) }}">{{ playlist_id }}</a></li>
+        {% for playlist in playlist_data %}
+            <li><a href="{{ url_for('get_playlist_tracks', playlist_id=playlist['id'], playlist_name=playlist['name']) }}">{{ playlist['name'] }}</a></li>
         {% endfor %}
     </ul>
 </body>

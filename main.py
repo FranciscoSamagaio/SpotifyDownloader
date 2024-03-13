@@ -81,18 +81,19 @@ def get_playlist():
 
     data = response.json()
 
-    # Extract names from each playlist
-    playlist_names = [playlist['name'] for playlist in data['items']]   
-    
-    # Extract names from each playlist
-    playlist_ids = [playlist['id'] for playlist in data['items']]
+    # Extract names and IDs from each playlist
+    playlist_data = [{'name': playlist['name'], 'id': playlist['id']} for playlist in data['items']]
 
-    # Return an HTML page with the playlist names
-    return render_template('playlist.html', playlist_ids=playlist_ids)
+    # Store the playlist name in the session
+    session['current_playlist_name'] = playlist['name']
+
+    # Return an HTML page with the playlist data
+    return render_template('playlist.html', playlist_data=playlist_data)
+
 
 
 @app.route('/playlist/<playlist_id>')
-def get_playlist_tracks(playlist_id):
+def get_playlist_tracks(playlist_id, playlist_name):
     if 'access_token' not in session:
         return redirect('/login')
     
@@ -110,17 +111,24 @@ def get_playlist_tracks(playlist_id):
 
     data = response.json()
     
+    print(data)
+
     # Extract track names from each item    
     track_names = [track['track']['name'] for track in data['items']]
-    	
+        
     # Extract track names from each item
     artist_names = [artist['name'] for track in data['items'] for artist in track['track']['artists']]
 
     # Assuming you have track_names and artist_names as lists
     combined_tracks = [(track_name, artist_name) for track_name, artist_name in zip(track_names, artist_names)]
 
-    # Return an HTML page with the track names
-    return render_template('playlist_tracks.html', playlist_id=playlist_id, combined_tracks=combined_tracks)
+    # Get playlist_name from the URL parameters
+    playlist_name = request.args.get('playlist_name', 'Unknown Playlist Name')
+
+
+    # Return an HTML page with the playlist name and track names
+    return render_template('playlist_tracks.html', playlist_name=playlist_name, combined_tracks=combined_tracks)
+
 
 
 @app.route('/refresh-token')
