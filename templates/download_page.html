@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Download Tracks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f7fd;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #0088cc;
+            text-align: center;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #fff;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        .track-name {
+            flex: 1;
+            margin-right: 10px;
+            color: #333; /* Set the color explicitly */
+        }
+        .btn-playlist {
+            background-color: #0088cc;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none; /* Remove underline */
+        }
+        .btn-playlist:hover {
+            background-color: #005580;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Download Tracks</h1>
+        <ul>
+            {% for track_name in downloaded_tracks %}
+                <li>
+                    <span class="track-name">{{ track_name }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+        <a href="/playlist" class="btn-playlist">Go to Playlist</a>
+    </div>
+</body>
+</html>

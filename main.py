@@ -7,6 +7,8 @@ import json
 from flask import Flask, redirect, request, jsonify, session
 from datetime import datetime
 
+from musicdownload import download_youtube
+
 app = Flask(__name__)
 app.config['SESSION_TYPE'] = 'filesystem'
 app.secret_key = '192b9bdd22ab9ed4d12e236c78afcb9a3'
@@ -20,7 +22,7 @@ API_BASE_URL = 'https://api.spotify.com/v1/'
 
 @app.route('/')
 def index():
-    return "Welcome to my Spotify App <a href='/login'> Login with Spotify</a>"
+    return render_template('home.html')
 
 @app.route('/login')
 def login():
@@ -84,16 +86,13 @@ def get_playlist():
     # Extract names and IDs from each playlist
     playlist_data = [{'name': playlist['name'], 'id': playlist['id']} for playlist in data['items']]
 
-    # Store the playlist name in the session
-    session['current_playlist_name'] = playlist['name']
-
     # Return an HTML page with the playlist data
     return render_template('playlist.html', playlist_data=playlist_data)
 
 
 
 @app.route('/playlist/<playlist_id>')
-def get_playlist_tracks(playlist_id, playlist_name):
+def get_playlist_tracks(playlist_id):
     if 'access_token' not in session:
         return redirect('/login')
     
@@ -110,8 +109,6 @@ def get_playlist_tracks(playlist_id, playlist_name):
         return jsonify({"error": "Unable to fetch playlist tracks"})
 
     data = response.json()
-    
-    print(data)
 
     # Extract track names from each item    
     track_names = [track['track']['name'] for track in data['items']]
@@ -125,11 +122,16 @@ def get_playlist_tracks(playlist_id, playlist_name):
     # Get playlist_name from the URL parameters
     playlist_name = request.args.get('playlist_name', 'Unknown Playlist Name')
 
-
     # Return an HTML page with the playlist name and track names
     return render_template('playlist_tracks.html', playlist_name=playlist_name, combined_tracks=combined_tracks)
 
-
+@app.route('/submit_selected_tracks', methods=['POST'])
+def submit_selected_tracks():
+    selected_tracks = request.form.getlist('selected_tracks')
+    # Assuming you have a function to download each track
+    for track_name in selected_tracks:
+        download_youtube(track_name)  # Replace with your download function
+    return render_template('download_page.html', downloaded_tracks=selected_tracks)
 
 @app.route('/refresh-token')
 def refresh_token():

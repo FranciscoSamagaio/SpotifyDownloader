@@ -2,14 +2,126 @@
 <html>
 <head>
     <title>Playlist Tracks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f7fd;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-bottom: 50px; /* Add padding to the bottom */
+        }
+        h1 {
+            color: #0088cc;
+            text-align: center;
+        }
+        p {
+            text-align: center;
+        }
+        form {
+            margin-top: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        .track-checkbox {
+            display: none; /* Hide the default checkbox */
+        }
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            border-radius: 3px;
+            margin-right: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .custom-checkbox.checked {
+            background-color: #0088cc;
+            border-color: #0088cc;
+        }
+        .custom-checkbox.checked:after {
+            content: '\2713'; /* Checkmark symbol */
+            font-size: 16px;
+            color: #fff;
+            display: block;
+            text-align: center;
+        }
+        .track-label {
+            cursor: pointer;
+            flex: 1; /* Allow label to grow and take remaining space */
+        }
+        button {
+            background-color: #0088cc;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: block;
+            margin: 0 auto; /* Center the button */
+        }
+        button:hover {
+            background-color: #005580;
+        }
+        /* Style for the footer */
+        .footer {
+            background-color: #f2f7fd;
+            padding: 20px;
+            text-align: center;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+        }
+        /* Light blue background color when checkbox is checked */
+        .checked-bg {
+            background-color: #cfe2ff !important;
+        }
+    </style>
 </head>
 <body>
-    <h1>Playlist Tracks</h1>
-    <p>Tracks for Playlist name: {{ playlist_name }}</p>
-    <ul>
-        {% for track_name, artist_name in combined_tracks %}
-            <li>{{ track_name }} - {{ artist_name }}</li>
-        {% endfor %}
-    </ul>
+    <div class="container">
+        <h1> {{ playlist_name }} Tracks</h1>
+        <form action="/submit_selected_tracks" method="POST">
+            <ul>
+                {% for track_name, artist_name in combined_tracks %}
+                    <li class="music-box">
+                        <input type="checkbox" class="track-checkbox" id="track{{ loop.index }}" name="selected_tracks" value="{{ track_name }}">
+                        <label for="track{{ loop.index }}" class="custom-checkbox"></label>
+                        <span class="track-label">{{ track_name }} - {{ artist_name }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+            <button type="submit">Download</button>
+        </form>
+    </div>
+    <script>
+        // Add event listeners to each checkbox
+        document.querySelectorAll('.track-checkbox').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                // Toggle 'checked' class on click
+                this.nextElementSibling.classList.toggle('checked');
+                // Toggle 'checked-bg' class on parent music box
+                this.closest('.music-box').classList.toggle('checked-bg');
+            });
+        });
+    </script>
 </body>
 </html>

@@ -1,14 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Playlist Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f7fd;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #0088cc;
+            text-align: center;
+        }
+        .playlist-list {
+            column-count: 2;
+            column-gap: 20px;
+        }
+        .playlist-item {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+        .playlist-item:hover {
+            background-color: #cfe2ff; /* Light blue hover color */
+        }
+        .playlist-link {
+            text-decoration: none;
+            color: #0088cc; /* Blue color */
+        }
+    </style>
 </head>
 <body>
-    <h1>Playlist Information</h1>
-    <ul>
-        {% for playlist in playlist_data %}
-            <li><a href="{{ url_for('get_playlist_tracks', playlist_id=playlist['id'], playlist_name=playlist['name']) }}">{{ playlist['name'] }}</a></li>
-        {% endfor %}
-    </ul>
+    <div class="container">
+        <h1>Playlist Information</h1>
+        <div class="playlist-list">
+            {% for playlist in playlist_data %}
+                <a href="{{ url_for('get_playlist_tracks', playlist_id=playlist['id'], playlist_name=playlist['name']) }}" class="playlist-link">
+                    <div class="playlist-item">
+                        {{ playlist['name'] }}
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
 </body>
 </html>
